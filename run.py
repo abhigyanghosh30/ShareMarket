@@ -20,11 +20,24 @@ class Investors(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	name = db.Column(db.String(100), nullable=False)
 	password = db.Column(db.String)
-	stocks1_count = db.Column(db.Integer, nullable=False, default=0)
-	stocks2_count = db.Column(db.Integer, nullable=False, default=0)
-	stocks3_count = db.Column(db.Integer, nullable=False, default=0)
+	stocks1 = db.Column(db.Integer, nullable=False, default=0)
+	stocks2 = db.Column(db.Integer, nullable=False, default=0)
+	stocks3 = db.Column(db.Integer, nullable=False, default=0)
+	stocks4 = db.Column(db.Integer, nullable=False, default=0)
+	stocks5 = db.Column(db.Integer, nullable=False, default=0)
+	stocks6 = db.Column(db.Integer, nullable=False, default=0)
+	stocks7 = db.Column(db.Integer, nullable=False, default=0)
+	stocks8 = db.Column(db.Integer, nullable=False, default=0)
+	stocks9 = db.Column(db.Integer, nullable=False, default=0)
+	stocks10 = db.Column(db.Integer, nullable=False, default=0)
+	stocks11 = db.Column(db.Integer, nullable=False, default=0)
+	stocks12 = db.Column(db.Integer, nullable=False, default=0)
+	stocks13 = db.Column(db.Integer, nullable=False, default=0)
+	stocks14 = db.Column(db.Integer, nullable=False, default=0)
+	stocks15 = db.Column(db.Integer, nullable=False, default=0)
 	sales = db.relationship('Sales',backref='investors', lazy='dynamic')
 	purchases = db.relationship('Purchases', primaryjoin="and_(Investors.id)==Purchases.recipient_id")
+	amount_left = db.Column(db.Integer, nullable=False, default=0)
 
 class Sales(db.Model):
 	__tablename__ = 'sales'
@@ -47,10 +60,88 @@ class Stocks(db.Model):
 	
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	current_price = db.Column(db.Integer, nullable=False, default=100)
+	amount_left = db.Column(db.Integer, nullable=False, default=100)	
+
+
+### CHECK SELL AND BUY CONDITIONS
+###
+###
+def checksell(stockid,nos,investor):
+	# investor = Investors.query.filter_by(name=session['name']).first()
+	if( stockid == 1 and investor.stocks1 > nos ):
+			return True
+	if( stockid == 2 and investor.stocks2 > nos ):
+			return True
+	if( stockid == 3 and investor.stocks3 > nos ):
+			return True
+	if( stockid == 4 and investor.stocks4 > nos ):
+			return True
+	if( stockid == 5 and investor.stocks5 > nos ):
+			return True
+	if( stockid == 6 and investor.stocks6 > nos ):
+			return True
+	if( stockid == 7 and investor.stocks7 > nos ):
+			return True
+	if( stockid == 8 and investor.stocks8 > nos ):
+			return True
+	if( stockid == 9 and investor.stocks9 > nos ):
+			return True
+	if( stockid == 10 and investor.stocks10 > nos ):
+			return True
+	if( stockid == 11 and investor.stocks11 > nos ):
+			return True
+	if( stockid == 12 and investor.stocks12 > nos ):
+			return True
+	if( stockid == 13 and investor.stocks13 > nos ):
+			return True
+	if( stockid == 14 and investor.stocks14 > nos ):
+			return True
+	if( stockid == 15 and investor.stocks15 > nos ):
+			return True
+	return False
+
+def checkbuy(stockid,nos,investor,stock):
+	# investor = Investors.query.filter_by(name = session['name']).first()
+	# stock = Stock.query.filter_by(id = stockid).first()
+	if( investor.amount_left > stock.current_price * nos and stock.amount_left > nos):
+		if stockid == 1 :
+			investor.stocks1 += nos
+		if stockid == 2 :
+			investor.stocks2 += nos
+		if stockid == 3 :
+			investor.stocks3 += nos
+		if stockid == 4 :
+			investor.stocks4 += nos
+		if stockid == 5 :
+			investor.stocks5 += nos
+		if stockid == 6 :
+			investor.stocks6 += nos
+		if stockid == 7 :
+			investor.stocks7 += nos
+		if stockid == 8 :
+			investor.stocks8 += nos
+		if stockid == 9 :
+			investor.stocks9 += nos
+		if stockid == 10 :
+			investor.stocks10 += nos
+		if stockid == 11 :
+			investor.stocks11 += nos
+		if stockid == 12 :
+			investor.stocks12 += nos
+		if stockid == 13 :
+			investor.stocks13 += nos
+		if stockid == 14 :
+			investor.stocks14 += nos
+		if stockid == 15 :
+			investor.stocks15 += nos
 		
-# Views start here
-#
-#
+		db.session.commit()
+		return True
+	return False
+
+#### Views start here
+###
+###
 
 @app.route('/')
 @app.route('/login')
@@ -62,17 +153,18 @@ def enter():
 	session.pop('name', None)
 	name = request.form['name']
 	password = request.form['password']
-	session['name'] = name
-	if name == 'admin' and password:
-		return redirect(url_for('admin_home'))	
-	return redirect('/home')
+	if name == 'admin' and password == 'admin123' :
+		session['name'] = name
+		return redirect(url_for('admin_home'))
+	try:
+		return redirect('/home')
+	except:
+		pass
 
 @app.route('/price', methods=['PUT'])
 def price():
 	data = request.get_json()
-	print(data)
 	stock = Stocks.query.filter_by(id=data['id']).first()
-	print(stock)
 	return Response(
 		json.dumps({'price':stock.current_price}),
 		status = 200,
@@ -90,22 +182,43 @@ def admin_home():
 
 @app.route('/sell')
 def sell():
-	investor = Investors.query.filter_by(name=session['name']).first()
-	sale = Sales()
 	return render_template('sell.html')
 
-@app.route('/increase')
-def increase():
-	stock_id = request.form['']
+@app.route('/decrease',methods=['POST'])
+def decrease():
+	number_of_stocks = request.form['number']
+	stock_id = request.form['stock_id']
 	
+	investor = Investors.query.filter_by(name=session['name']).first()
+	stock = Stocks.query.filter_by(stock_id=stock_id).first()
+
+	if checksell(stock_id,number_of_stocks,investor):
+		investor.amount_left += stock.current_price * number_of_stocks
+		sale = Sales(sender_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
+		stock.amount_left += number_of_stocks	
+	db.session.add(sale)
+	db.session.commit()
+
 	return redirect(url_for('home'))
 
 @app.route('/buy')
 def buy():
 	return render_template('buy.html')
 
-@app.route('/decrease')
-def decrease():
+@app.route('/increase',methods=['POST'])
+def increase():
+	number_of_stocks = request.form['number']
+	stock_id = request.form['stock_id']
+	
+	investor = Investors.query.filter_by(name=session['name']).first()
+	stock = Stocks.query.filter_by(stock_id=stock_id).first()
+
+	if checkbuy(stock_id,number_of_stocks,investor,stock):
+		investor.amount_left -= stock.current_price * number_of_stocks
+		purchase = Purchases(recipient_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
+		stock.amount_left -= number_of_stocks
+	db.session.add(purchase)
+	db.session.commit()
 	return redirect(url_for('home'))
 
 @app.route('/logout')

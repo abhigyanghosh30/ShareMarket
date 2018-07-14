@@ -1,6 +1,6 @@
 <script type="text/javascript">
 	function updateProgress(){
-		for( var i=1;i<=3;i++)
+		for( let i=1;i<=15;i++)
 		{	
 			let data = { id: i };
 				let request=$.ajax({
@@ -10,10 +10,14 @@
 					contentType: 'application/json'
 				});
 				request.done(function(data){
-					console.log(data)
+					console.log(data['price']);
+					console.log("#"+i.toString());
+					var bar = document.getElementById("stock"+i.toString())
+					bar.style.width = "" +(data['price']/2).toString() + "%";
+					bar.innerHTML = (data['price']).toString() + "G";
 				});
 		}
 	}
-	setInterval(updateProgress,1000);
+	setInterval(updateProgress,5000);
 
 </script>
