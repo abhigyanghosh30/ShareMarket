@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+	{% block title %}
+		Login
+	{% endblock %}
+	{% block head %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='signin.css') }}">
+	{% endblock %}
+	{% block body %}
+	<div class="container">
+		<form action="{{ url_for('enter') }}" class="form-signin" method="POST">
+			<div class="form-group">
+		    	<label>Company Name</label>
+		   		<input type="text" class="form-control" name="name"" placeholder="Enter Company Name">
+		  	</div>
+		  	<div class="form-group">
+		    	<label>Password</label>
+		    	<input type="password" class="form-control" name="password" placeholder="Password">
+		  	</div>
+		  	<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+		<br>
+	</div>
+	{% endblock %}

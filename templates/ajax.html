@@ -1,0 +1,19 @@
+<script type="text/javascript">
+	function updateProgress(){
+		for( var i=1;i<=3;i++)
+		{	
+			let data = { id: i };
+				let request=$.ajax({
+					url:'http://localhost:5000/price',
+					method: 'PUT',
+					data: JSON.stringify(data),
+					contentType: 'application/json'
+				});
+				request.done(function(data){
+					console.log(data)
+				});
+		}
+	}
+	setInterval(updateProgress,1000);
+
+</script>
