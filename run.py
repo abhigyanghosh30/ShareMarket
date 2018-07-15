@@ -44,7 +44,7 @@ class Sales(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	sender_id = db.Column(db.Integer, db.ForeignKey('investors.id'))
-	stock_id = db.Column(db.Integer,db.ForeignKey('stocks.id'))
+	stock_id = db.Column(db.Integer,db.ForeignKey('companies.id'))
 	amount = db.Column(db.Integer, nullable=False)
 
 class Purchases(db.Model):
@@ -52,15 +52,15 @@ class Purchases(db.Model):
 
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	recipient_id = db.Column(db.Integer, db.ForeignKey('investors.id'))
-	stock_id = db.Column(db.Integer,db.ForeignKey('stocks.id'))
+	stock_id = db.Column(db.Integer,db.ForeignKey('companies.id'))
 	amount = db.Column(db.Integer, nullable=False)
 
-class Stocks(db.Model):
-	__tablename__ = 'stocks'
+class Companies(db.Model):
+	__tablename__ = 'companies'
 	
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	current_price = db.Column(db.Integer, nullable=False, default=100)
-	amount_left = db.Column(db.Integer, nullable=False, default=100)	
+	shares_left = db.Column(db.Integer, nullable=False, default=100)	
 
 
 ### CHECK SELL AND BUY CONDITIONS
@@ -103,7 +103,7 @@ def checksell(stockid,nos,investor):
 def checkbuy(stockid,nos,investor,stock):
 	# investor = Investors.query.filter_by(name = session['name']).first()
 	# stock = Stock.query.filter_by(id = stockid).first()
-	if( investor.amount_left > stock.current_price * nos and stock.amount_left > nos):
+	if( investor.amount_left > stock.current_price * nos and stock.shares_left > nos):
 		if stockid == 1 :
 			investor.stocks1 += nos
 		if stockid == 2 :
@@ -157,18 +157,17 @@ def enter():
 		if name == 'admin' and password == 'admin123' :
 			session['name'] = name
 			return redirect(url_for('admin_home'))
-		investor = Investors.query.filter_by(
-        username=name).first()
-        if(password == investor.password)
-        	session['name'] = name
-			return redirect('/home')
+		# investor = Investors.query.filter_by(username=name).first()
+		# if(password == investor.password):
+		session['name'] = name
+		return redirect('/home')
 	except:
 		return redirect('/')
 
 @app.route('/price', methods=['PUT'])
 def price():
 	data = request.get_json()
-	stock = Stocks.query.filter_by(id=data['id']).first()
+	stock = Companies.query.filter_by(id=data['id']).first()
 	return Response(
 		json.dumps({'price':stock.current_price}),
 		status = 200,
@@ -177,7 +176,7 @@ def price():
 
 @app.route('/home')
 def home():
-	return render_template('home.html', name=session['name'],stocks=Stocks.query.all())
+	return render_template('home.html', name=session['name'],stocks=Companies.query.all())
 
 @app.route('/admin_home')
 def admin_home():
@@ -194,7 +193,7 @@ def decrease():
 	stock_id = request.form['stock_id']
 	
 	investor = Investors.query.filter_by(name=session['name']).first()
-	stock = Stocks.query.filter_by(stock_id=stock_id).first()
+	stock = Companies.query.filter_by(stock_id=stock_id).first()
 
 	if checksell(stock_id,number_of_stocks,investor):
 		investor.amount_left += stock.current_price * number_of_stocks
@@ -216,7 +215,7 @@ def increase():
 	stock_id = request.form['stock_id']
 	
 	investor = Investors.query.filter_by(name=session['name']).first()
-	stock = Stocks.query.filter_by(stock_id=stock_id).first()
+	stock = Companies.query.filter_by(stock_id=stock_id).first()
 
 	if checkbuy(stock_id,number_of_stocks,investor,stock):
 		investor.amount_left -= stock.current_price * number_of_stocks
