@@ -12,7 +12,9 @@
 				request.done(function(data){
 					console.log(data['price']);
 					console.log("#"+i.toString());
+
 					var bar = document.getElementById("stock"+i.toString())
+					
 					bar.style.width = "" +(data['price']/2).toString() + "%";
 					bar.innerHTML = (data['price']).toString() + "G";
 				});
