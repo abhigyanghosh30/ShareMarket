@@ -2,15 +2,15 @@
 <html>
 <head>
 	<title>{% block title %}{% endblock %}</title>
-	<link rel="stylesheet" href="{{ url_for('static'), filename='bootstrap.min.css' }}">
 	{% block head %}{% endblock %}
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static' , filename='css/bootstrap.min.css') }}">
 </head>
 <body class="text-center">
 {% block body %}
 {% endblock %}
 </body>
 <script src="{{ url_for('static',filename='popper.min.js') }}"></script>
-<script src="{{ url_for('static',filename='bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static',filename='jquery-3.2.1.slim.min.js') }}"></script>
 <script src="{{ url_for('static',filename='jquery.js') }}"></script>
 

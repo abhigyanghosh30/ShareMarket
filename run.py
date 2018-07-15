@@ -59,6 +59,7 @@ class Companies(db.Model):
 	__tablename__ = 'companies'
 	
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+	name = db.Column(db.String(100), nullable=False)
 	current_price = db.Column(db.Integer, nullable=False, default=100)
 	shares_left = db.Column(db.Integer, nullable=False, default=100)	
 
@@ -103,7 +104,12 @@ def checksell(stockid,nos,investor):
 def checkbuy(stockid,nos,investor,stock):
 	# investor = Investors.query.filter_by(name = session['name']).first()
 	# stock = Stock.query.filter_by(id = stockid).first()
-	if( investor.amount_left > stock.current_price * nos and stock.shares_left > nos):
+	nos=int(nos)
+	print(type(stock.current_price))
+	print(type(nos))
+	print(nos)
+
+	if investor.amount_left > stock.current_price * nos and stock.shares_left > nos :
 		if stockid == 1 :
 			investor.stocks1 += nos
 		if stockid == 2 :
@@ -193,15 +199,15 @@ def decrease():
 	stock_id = request.form['stock_id']
 	
 	investor = Investors.query.filter_by(name=session['name']).first()
-	stock = Companies.query.filter_by(stock_id=stock_id).first()
+	stock = Companies.query.filter_by(id=stock_id).first()
 
 	if checksell(stock_id,number_of_stocks,investor):
 		investor.amount_left += stock.current_price * number_of_stocks
 		sale = Sales(sender_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.amount_left += number_of_stocks
 		stock.current_price -= 1 	
-	db.session.add(sale)
-	db.session.commit()
+		db.session.add(sale)
+		db.session.commit()
 
 	return redirect(url_for('home'))
 
@@ -215,15 +221,15 @@ def increase():
 	stock_id = request.form['stock_id']
 	
 	investor = Investors.query.filter_by(name=session['name']).first()
-	stock = Companies.query.filter_by(stock_id=stock_id).first()
+	stock = Companies.query.filter_by(id=stock_id).first()
 
 	if checkbuy(stock_id,number_of_stocks,investor,stock):
 		investor.amount_left -= stock.current_price * number_of_stocks
 		purchase = Purchases(recipient_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.amount_left -= number_of_stocks
 		stock.current_price += 2
-	db.session.add(purchase)
-	db.session.commit()
+		db.session.add(purchase)
+		db.session.commit()
 	return redirect(url_for('home'))
 
 @app.route('/logout')
@@ -233,4 +239,4 @@ def logout():
 
 
 if __name__ == "__main__":
-	app.run(host='192.168.43.',port=5000)
+	app.run(port=5000,debug=True)

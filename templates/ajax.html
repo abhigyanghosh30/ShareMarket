@@ -4,19 +4,21 @@
 		{	
 			let data = { id: i };
 				let request=$.ajax({
-					url:'http://localhost:5000/price',
+					url:'{{ url_for('price') }}',
 					method: 'PUT',
 					data: JSON.stringify(data),
 					contentType: 'application/json'
 				});
 				request.done(function(data){
-					console.log(data['price']);
-					console.log("#"+i.toString());
-
-					var bar = document.getElementById("stock"+i.toString())
 					
-					bar.style.width = "" +(data['price']/2).toString() + "%";
-					bar.innerHTML = (data['price']).toString() + "G";
+					var price = document.getElementById("stock"+i.toString());
+					var image = document.getElementById("image"+i.toString());
+					var inprice = price.innerHTML;
+					if( data['price'] > inprice )
+						image.src="{{ url_for('static', filename='up.png') }}";
+					if( data['price'] < inprice )
+						image.src="{{ url_for('static', filename='down.png') }}";
+					price.innerHTML = (data['price']);
 				});
 		}
 	}
