@@ -153,14 +153,17 @@ def enter():
 	session.pop('name', None)
 	name = request.form['name']
 	password = request.form['password']
-	if name == 'admin' and password == 'admin123' :
-		session['name'] = name
-		return redirect(url_for('admin_home'))
 	try:
-		session['name'] = name
-		return redirect('/home')
+		if name == 'admin' and password == 'admin123' :
+			session['name'] = name
+			return redirect(url_for('admin_home'))
+		investor = Investors.query.filter_by(
+        username=name).first()
+        if(password == investor.password)
+        	session['name'] = name
+			return redirect('/home')
 	except:
-		pass
+		return redirect('/')
 
 @app.route('/price', methods=['PUT'])
 def price():
@@ -196,7 +199,8 @@ def decrease():
 	if checksell(stock_id,number_of_stocks,investor):
 		investor.amount_left += stock.current_price * number_of_stocks
 		sale = Sales(sender_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
-		stock.amount_left += number_of_stocks	
+		stock.amount_left += number_of_stocks
+		stock.current_price -= 1 	
 	db.session.add(sale)
 	db.session.commit()
 
@@ -218,6 +222,7 @@ def increase():
 		investor.amount_left -= stock.current_price * number_of_stocks
 		purchase = Purchases(recipient_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.amount_left -= number_of_stocks
+		stock.current_price += 2
 	db.session.add(purchase)
 	db.session.commit()
 	return redirect(url_for('home'))

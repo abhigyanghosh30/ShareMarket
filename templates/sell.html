@@ -9,7 +9,7 @@
 	{% include 'navbar.html' %}
 	
 	<div class="container">
-		<form action="{{ url_for('increase') }}" method="POST" class="form-signin">
+		<form action="{{ url_for('increase') }}" method="POST">
 			<input type="number" name="amount" min="0">
 			<select name="stock_id">
 				{% for i in range(1,16) %}
