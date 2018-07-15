@@ -157,6 +157,7 @@ def enter():
 		session['name'] = name
 		return redirect(url_for('admin_home'))
 	try:
+		session['name'] = name
 		return redirect('/home')
 	except:
 		pass
