@@ -2,11 +2,14 @@ from flask import Flask, session, render_template, request, redirect, url_for, R
 from flask_sqlalchemy import SQLAlchemy
 import os
 import random
-
+import socket
 
 app = Flask(__name__)
 app.secret_key = os.urandom(67)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
+
+IP = socket.gethostbyname(socket.gethostname())
+print(IP)
 
 db = SQLAlchemy(app)
 
@@ -163,8 +166,10 @@ def enter():
 		if name == 'admin' and password == 'admin123' :
 			session['name'] = name
 			return redirect(url_for('admin_home'))
-		# investor = Investors.query.filter_by(username=name).first()
-		# if(password == investor.password):
+		investor = Investors.query.filter_by(username=name).first()
+		if(password == investor.password):
+			session['name'] = name
+			return redirect('/home')
 		session['name'] = name
 		return redirect('/home')
 	except:
@@ -237,6 +242,13 @@ def logout():
 	session.pop('name',None)
 	return redirect('/login')
 
+@app.route('/admin_change')
+def admin_change():
+	pass
+
+@app.route('/change')
+def change():
+	pass
 
 if __name__ == "__main__":
 	app.run(port=5000,debug=True)
