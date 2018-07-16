@@ -8,12 +8,15 @@ app = Flask(__name__)
 app.secret_key = os.urandom(67)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
 
-output = subprocess.check_output('ifconfig')
-for out in output:
-	if out.startswith('IPv4'):
-		print(out)
+result = []
+win_cmd = 'ipconfig'(curr_user,filename,ip_address)
+process = subprocess.Popen(win_cmd,
+shell=True,
+stdout=subprocess.PIPE,
+stderr=subprocess.PIPE )
+for line in process.stdout:
+    print line
 
-print (output)
 db = SQLAlchemy(app)
 
 # Models start here
