@@ -2,7 +2,7 @@
 	{% block title %}Change Prices{% endblock %}
 	{% block body %}
 	<div class="container">
-		<form action="{{ url_for('increase') }}" method="POST" >
+		<form action="{{ url_for('change') }}" method="POST" >
 			<label>New Price</label>
 			<input type="number" name="number" min="0">
 			<select name="stock_id">

@@ -8,16 +8,28 @@ app = Flask(__name__)
 app.secret_key = os.urandom(67)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
 
-result = []
-win_cmd = 'ipconfig'
-process = subprocess.check_output(win_cmd).decode()
-print(process)
-print(process.index('192'))
-index = process.index('192')
-IP = ""
-for i in range(13):
-    IP = IP+process[index+i]
-print(IP)
+try:
+	win_cmd = 'ipconfig'
+	process = subprocess.check_output(win_cmd).decode()
+	print(process)
+	print(process.index('192'))
+	index = process.index('192')
+	IP = ""
+	for i in range(13):
+	    IP = IP+process[index+i]
+	print(IP)
+except:
+	unix_cmd = 'ifconfig'
+	process = subprocess.check_output(unix_cmd).decode()
+	print(process)
+	print(process.index('192'))
+	index = process.index('192')
+	IP = ""
+	for i in range(15):
+		IP = IP+process[index+i]
+	IP = IP.strip()
+	print(IP)
+
 db = SQLAlchemy(app)
 
 # Models start here
@@ -251,11 +263,17 @@ def logout():
 
 @app.route('/admin_change')
 def admin_change():
-	pass
+	return render_template('admin_change.html')
 
-@app.route('/change')
+@app.route('/change', methods=['POST'])
 def change():
-	pass
+	current_price = request.form['number']
+	stock_id = request.form['stock_id']
+
+	stock = Companies.query.filter_by(stock_id=stock_id).first()
+	stock.current_price = current_price
+	db.session.commit()
+	return redirect(url_for('admin_home'))
 
 if __name__ == "__main__":
 	app.run(host=IP,port=5000,debug=True)
