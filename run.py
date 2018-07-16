@@ -11,8 +11,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
 try:
 	win_cmd = 'ipconfig'
 	process = subprocess.check_output(win_cmd).decode()
-	print(process)
-	print(process.index('192'))
 	index = process.index('192')
 	IP = ""
 	for i in range(13):
@@ -21,8 +19,6 @@ try:
 except:
 	unix_cmd = 'ifconfig'
 	process = subprocess.check_output(unix_cmd).decode()
-	print(process)
-	print(process.index('192'))
 	index = process.index('192')
 	IP = ""
 	for i in range(15):
