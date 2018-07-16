@@ -2,15 +2,18 @@ from flask import Flask, session, render_template, request, redirect, url_for, R
 from flask_sqlalchemy import SQLAlchemy
 import os
 import random
-import socket
+import subprocess
 
 app = Flask(__name__)
 app.secret_key = os.urandom(67)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
 
-IP = socket.gethostbyname(socket.gethostname())
-print(IP)
+output = subprocess.check_output('ifconfig')
+for out in output:
+	if out.startswith('IPv4'):
+		print(out)
 
+print (output)
 db = SQLAlchemy(app)
 
 # Models start here
