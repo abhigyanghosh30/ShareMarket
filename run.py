@@ -9,14 +9,15 @@ app.secret_key = os.urandom(67)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stock.db'
 
 result = []
-win_cmd = 'ipconfig'(curr_user,filename,ip_address)
-process = subprocess.Popen(win_cmd,
-shell=True,
-stdout=subprocess.PIPE,
-stderr=subprocess.PIPE )
-for line in process.stdout:
-    print line
-
+win_cmd = 'ipconfig'
+process = subprocess.check_output(win_cmd).decode()
+print(process)
+print(process.index('192'))
+index = process.index('192')
+IP = ""
+for i in range(13):
+    IP = IP+process[index+i]
+print(IP)
 db = SQLAlchemy(app)
 
 # Models start here
@@ -257,4 +258,4 @@ def change():
 	pass
 
 if __name__ == "__main__":
-	app.run(port=5000,debug=True)
+	app.run(host=IP,port=5000,debug=True)
