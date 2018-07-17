@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+	{% block body %}
+	{% include 'admin_nav.html' %}
+		{% for investor in investors %}
+		<table class="table table-dark table-hover">
+			<thead>
+				<h2> {{investor['name']}} </h2>
+				<tr>
+					<th scope="col">Sale Company Id</th>
+					<th scope="col">Sale Amount</th>
+					<th scope="col">Number of Stocks</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sale in investor['sales'] %}
+					<tr>
+						<td>{{ sale['stock_id'] }}</td>
+						<td>{{ sale['amount'] }}</td>
+						<td>{{ sale['number_of_stocks'] }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+			<thead>
+				<tr>
+					<th scope="col">Purchase Company</th>
+					<th scope="col">Purchase Amount</th>
+					<th scope="col">Number of Stocks</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for sale in investor['purchases'] %}
+					<tr>
+						<td>{{ sale['stock_id'] }}</td>
+						<td>{{ sale['amount'] }}</td>
+						<td>{{ sale['number_of_stocks'] }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		{% endfor %}
+	{% endblock %}

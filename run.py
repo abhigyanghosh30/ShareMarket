@@ -64,6 +64,7 @@ class Sales(db.Model):
 	sender_id = db.Column(db.Integer, db.ForeignKey('investors.id'))
 	stock_id = db.Column(db.Integer,db.ForeignKey('companies.id'))
 	amount = db.Column(db.Integer, nullable=False)
+	number_of_stocks = db.Column(db.Integer, nullable=False)
 
 class Purchases(db.Model):
 	__tablename__ = 'purchases'
@@ -72,6 +73,7 @@ class Purchases(db.Model):
 	recipient_id = db.Column(db.Integer, db.ForeignKey('investors.id'))
 	stock_id = db.Column(db.Integer,db.ForeignKey('companies.id'))
 	amount = db.Column(db.Integer, nullable=False)
+	number_of_stocks = db.Column(db.Integer, nullable=False)
 
 class Companies(db.Model):
 	__tablename__ = 'companies'
@@ -79,6 +81,7 @@ class Companies(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	name = db.Column(db.String(100), nullable=False)
 	current_price = db.Column(db.Integer, nullable=False, default=100)
+	recent_trend = db.Column(db.String, )
 	shares_left = db.Column(db.Integer, nullable=False, default=100)	
 
 
@@ -122,7 +125,9 @@ def checksell(stockid,nos,investor):
 def checkbuy(stockid,nos,investor,stock):
 	# investor = Investors.query.filter_by(name = session['name']).first()
 	# stock = Stock.query.filter_by(id = stockid).first()
+	print(nos)
 	nos=int(nos)
+
 	print(type(stock.current_price))
 	print(type(nos))
 	print(nos)
@@ -177,25 +182,26 @@ def enter():
 	session.pop('name', None)
 	name = request.form['name']
 	password = request.form['password']
-	try:
-		if name == 'admin' and password == 'admin123' :
-			session['name'] = name
-			return redirect(url_for('admin_home'))
-		investor = Investors.query.filter_by(username=name).first()
-		if(password == investor.password):
-			session['name'] = name
-			return redirect('/home')
+	# try:
+	if name == 'admin' and password == 'admin123' :
+		session['name'] = name
+		return redirect(url_for('admin_home'))
+	investor = Investors.query.filter_by(name=name).first()
+	print(investor.password)
+	if(password == investor.password):
 		session['name'] = name
 		return redirect('/home')
-	except:
-		return redirect('/')
+	session['name'] = name
+	return redirect('/home')
+	# except:
+	# 	return redirect('/')
 
 @app.route('/price', methods=['PUT'])
 def price():
 	data = request.get_json()
 	stock = Companies.query.filter_by(id=data['id']).first()
 	return Response(
-		json.dumps({'price':stock.current_price}),
+		json.dumps({'price':stock.current_price, 'trend':stock.recent_trend }),
 		status = 200,
 		mimetype = 'application/json'
 		)
@@ -207,11 +213,14 @@ def home():
 @app.route('/admin_home')
 def admin_home():
 	investors=Investors.query.all()
-	return render_template('admin_home.html', investors=investors)
+	return render_template('admin_home.html', investors=investors,stocks=Companies.query.all())
 
 @app.route('/sell')
 def sell():
-	return render_template('sell.html')
+	if session['name']:
+		return render_template('sell.html')
+	else:
+		return redirect(url_for('login'))
 
 @app.route('/decrease',methods=['POST'])
 def decrease():
@@ -225,15 +234,20 @@ def decrease():
 		investor.amount_left += stock.current_price * number_of_stocks
 		sale = Sales(sender_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.amount_left += number_of_stocks
-		stock.current_price -= 1 	
+		stock.current_price -= 1 
+		stock.recent_trend = 'down'	
 		db.session.add(sale)
 		db.session.commit()
-
-	return redirect(url_for('home'))
+		return redirect(url_for('home'))
+	else:
+		return render_template('funderror.html')
 
 @app.route('/buy')
 def buy():
-	return render_template('buy.html')
+	if session['name']:
+		return render_template('buy.html')
+	else:
+		return redirect(url_for('login'))
 
 @app.route('/increase',methods=['POST'])
 def increase():
@@ -248,9 +262,12 @@ def increase():
 		purchase = Purchases(recipient_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.amount_left -= number_of_stocks
 		stock.current_price += 2
+		stock.recent_trend = 'up'
 		db.session.add(purchase)
 		db.session.commit()
-	return redirect(url_for('home'))
+		return redirect(url_for('home'))
+	else:
+		return render_template('funderror.html')
 
 @app.route('/logout')
 def logout():
@@ -259,17 +276,29 @@ def logout():
 
 @app.route('/admin_change')
 def admin_change():
-	return render_template('admin_change.html')
+	if(session['name']=='admin'):
+		return render_template('admin_change.html')
+	else:
+		return redirect(url_for('home'))
 
 @app.route('/change', methods=['POST'])
 def change():
 	current_price = request.form['number']
 	stock_id = request.form['stock_id']
 
-	stock = Companies.query.filter_by(stock_id=stock_id).first()
+	stock = Companies.query.filter_by(id=stock_id).first()
+	if stock.current_price > int(current_price):
+		stock.recent_trend = 'down'
+	else:
+		stock.recent_trend = 'up'
 	stock.current_price = current_price
 	db.session.commit()
 	return redirect(url_for('admin_home'))
 
+@app.route('/sales')
+def sales():
+	return render_template('sales.html',investors=Investors.query.all())
+
 if __name__ == "__main__":
+	print(IP)
 	app.run(host=IP,port=5000,debug=True)

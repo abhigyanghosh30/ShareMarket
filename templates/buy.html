@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 	{% block title %}Sell or Buy{% endblock %}
-	{% block head %}<link rel="stylesheet" type="text/css" href=" {{url_for('static',filename='signin.css')}} ">  {% endblock %}
+	{% block head %}<link rel="stylesheet" type="text/css" href=" {{url_for('static',filename='signin.css')}} ">  
+
+	{% endblock %}
+	
 	{% block body %}
 
 	{% include 'navbar.html' %}
+	
 	<div class="container">
 		<form action="{{ url_for('increase') }}" method="POST" >
-			<input type="number" name="number" min="0">
-			<select name="stock_id">
+			<input type="number" name="number" min="0" value=0>
+			<select name="stock_id" class="bg-light">
 				{% for i in range(1,16) %}
 				<option value=" {{ i }} ">Company {{ i }} </option>
 				{% endfor %}
@@ -15,4 +19,5 @@
 			<button type="submit" class="btn btn-primary">BUY</button>
 		</form>
 	</div>	
+	
 	{% endblock %}

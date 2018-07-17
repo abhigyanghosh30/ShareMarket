@@ -1,60 +1,8 @@
 {% extends 'base.html' %}
 	{% block title %}ADMIN{% endblock %}
 	{% block body %}
-		
-		{% for investor in investors %}
-		<div class="container">
-			<h2> {{investor['name']}} </h2>
-			<hr>
-				<div class="row">
-					<div class="col-sm-3">
-						<h3>Sale Id</h3>
-					</div>
-					<div class="col-sm-3">
-						<h3>Recipient Id</h3>
-					</div>
-					<div class="col-sm-3">
-						<h3>Sale Amount</h3>
-					</div>
-				</div>
-				{% for sale in investor['sales'] %}
-					<div class="row">
-						<div class="col-sm-3">
-							<p> {{ sale['id'] }} </p>
-						</div>
-						<div class="col-sm-3">
-							<p> {{ sale['amount'] }} </p>
-						</div>
-					</div>
-				{% endfor %}
-				<hr>
-				<div class="row">
-					<div class="col-sm-3">
-						<h3>Purchase Id</h3>
-					</div>
-					<div class="col-sm-3">
-						<h3>Sender Id</h3>
-					</div>
-					<div class="col-sm-3">
-						<h3>Sale Amount</h3>
-					</div>
-				</div>
-				{% for sale in investor['purchases'] %}
-					<div class="row">
-						<div class="col-sm-3">
-							<p> {{ sale['id'] }} </p>
-						</div>
-						<div class="col-sm-3">
-							<p> {{ sale['amount'] }} </p>
-						</div>
-					</div>
-				{% endfor %}
-				<hr>
-		</div>
-		<hr>
-		{% endfor %}
-		
-		{% include 'footer.html' %}
+	{% include 'admin_nav.html' %}
+	{% include 'footer.html' %}	
 	{% endblock %}
 	{% block script %}
 	{% include 'ajax.html' %}
