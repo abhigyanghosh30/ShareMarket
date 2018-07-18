@@ -1,8 +1,9 @@
-from flask import Flask, session, render_template, request, redirect, url_for, Response, json
+from flask import Flask, session, render_template, request, redirect, url_for, Response, json, g, flash
 from flask_sqlalchemy import SQLAlchemy
 import os
 import random
 import subprocess
+import csv
 
 app = Flask(__name__)
 app.secret_key = os.urandom(67)
@@ -81,7 +82,7 @@ class Companies(db.Model):
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	name = db.Column(db.String(100), nullable=False)
 	current_price = db.Column(db.Integer, nullable=False, default=100)
-	recent_trend = db.Column(db.String, )
+	recent_trend = db.Column(db.String)
 	shares_left = db.Column(db.Integer, nullable=False, default=100)	
 
 
@@ -171,6 +172,40 @@ def checkbuy(stockid,nos,investor,stock):
 #### Views start here
 ###
 ###
+@app.before_first_request
+def initialize():
+    db.create_all()
+    with open('companies.csv', mode='r') as csv_file:
+    	csv_reader = csv.DictReader(csv_file)
+    	for row in csv_reader:
+    		company = Companies(id=row['id'],name=row['name'],current_price=row['current_price'],recent_trend=row['recent_trend'],shares_left=row['shares_left'])
+    		db.session.add(company)
+    with open('investors.csv', mode='r') as csv_file:
+    	csv_reader = csv.DictReader(csv_file)
+    	for row in csv_reader:
+    		investor = Investors()
+    		investor.id = row['id']
+    		investor.name = row['name']
+    		investor.password = row['password']
+    		investor.stocks1 = row['stocks1']
+    		investor.stocks2 = row['stocks2']
+    		investor.stocks3 = row['stocks3']
+    		investor.stocks4 = row['stocks4']
+    		investor.stocks5 = row['stocks5']
+    		investor.stocks6 = row['stocks6']
+    		investor.stocks7 = row['stocks7']
+    		investor.stocks8 = row['stocks8']
+    		investor.stocks9 = row['stocks9']
+    		investor.stocks10 = row['stocks10']
+    		investor.stocks11 = row['stocks11']
+    		investor.stocks12 = row['stocks12']
+    		investor.stocks13 = row['stocks13']
+    		investor.stocks14 = row['stocks14']
+    		investor.stocks1 = row['stocks15']
+    		investor.amount_left = row['amount_left']
+    		db.session.add(investor)
+    db.session.commit()		
+
 
 @app.route('/')
 @app.route('/login')
@@ -183,9 +218,13 @@ def enter():
 	name = request.form['name']
 	password = request.form['password']
 	# try:
-	if name == 'admin' and password == 'admin123' :
-		session['name'] = name
-		return redirect(url_for('admin_home'))
+	if name == 'admin':
+		if password == 'admin123' :
+			session['name'] = name
+			return redirect(url_for('admin_home'))
+		else:
+			return redirect('/')
+
 	investor = Investors.query.filter_by(name=name).first()
 	print(investor.password)
 	if(password == investor.password):
@@ -298,6 +337,12 @@ def change():
 @app.route('/sales')
 def sales():
 	return render_template('sales.html',investors=Investors.query.all())
+
+@app.before_request
+def before_request():
+    g.user = None
+    if 'user' in session:
+        g.user = session['user']
 
 if __name__ == "__main__":
 	print(IP)

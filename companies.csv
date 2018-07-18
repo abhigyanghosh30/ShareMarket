@@ -1,4 +1,4 @@
-id,name,current_price,recent_trend,amount_left
+id,name,current_price,recent_trend,shares_left
 1,Company1,0,up,0
 2,Company2,0,up,0
 3,Company3,0,up,0
