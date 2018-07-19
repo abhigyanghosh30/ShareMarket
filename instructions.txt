@@ -1,0 +1,13 @@
+# to push changes:
+git add .
+git commit -m "Message"
+git push origin master
+
+# to pull  changes
+git pull origin master
+
+# incase it fails
+git stash #throws away the changes
+
+Incase of emergency call: 9007355023 or 7981107289
+
