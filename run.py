@@ -26,6 +26,7 @@ except:
 		IP = IP+process[index+i]
 	IP = IP.strip()
 	print(IP)
+	os.system('rm ~/Documents/Flask_Apps/ShareMarket/stocks.db')
 
 db = SQLAlchemy(app)
 
@@ -247,7 +248,11 @@ def price():
 
 @app.route('/home')
 def home():
-	return render_template('home.html', name=session['name'],stocks=Companies.query.all())
+	try:
+		return render_template('alt_home.html', name=session['name'],stocks=Companies.query.all())
+	except:
+		return("Please Login First")
+
 
 @app.route('/admin_home')
 def admin_home():
@@ -257,7 +262,7 @@ def admin_home():
 @app.route('/sell')
 def sell():
 	if session['name']:
-		return render_template('sell.html')
+		return render_template('sell.html',companies=Companies.query.all())
 	else:
 		return redirect(url_for('login'))
 
@@ -284,7 +289,7 @@ def decrease():
 @app.route('/buy')
 def buy():
 	if session['name']:
-		return render_template('buy.html')
+		return render_template('buy.html',companies=Companies.query.all())
 	else:
 		return redirect(url_for('login'))
 
