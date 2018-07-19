@@ -351,4 +351,4 @@ def before_request():
 
 if __name__ == "__main__":
 	print(IP)
-	app.run(host=IP,port=5000,debug=True)
+	app.run(host=IP,port=80,debug=True)
