@@ -321,9 +321,30 @@ def logout():
 @app.route('/admin_change')
 def admin_change():
 	if(session['name']=='admin'):
-		return render_template('admin_change.html')
+		return render_template('admin_change.html', companies=Companies.query.all())
 	else:
 		return redirect(url_for('home'))
+
+@app.route('/admin_increase', methods=['POST'])
+def admin_increase():
+	stock_id = request.form['stock_id']
+	inc_in_price = int(request.form['number'])
+	print(inc_in_price)
+	company = Companies.query.filter_by(id=stock_id).first()
+	company.current_price += inc_in_price
+	company.recent_trend = 'up'
+	db.session.commit()
+	return redirect('/admin_change')
+
+@app.route('/admin_decrease', methods=['POST'])
+def admin_decrease():
+	stock_id = request.form['stock_id']
+	inc_in_price = int(request.form['number'])
+	company = Companies.query.filter_by(id=stock_id).first()
+	company.current_price -= inc_in_price
+	company.recent_trend = 'down'
+	db.session.commit()
+	return redirect('/admin_change')
 
 @app.route('/change', methods=['POST'])
 def change():
@@ -351,4 +372,4 @@ def before_request():
 
 if __name__ == "__main__":
 	print(IP)
-	app.run(host=IP,port=80,debug=True)
+	app.run(host=IP,port=5000,debug=True)
