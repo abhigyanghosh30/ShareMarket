@@ -11,3 +11,14 @@ git stash #throws away the changes
 
 Incase of emergency call: 9007355023 or 7981107289
 
+# to make the database
+open cmd
+goto Documents\ShareMarket
+type python
+>>> inside the python shell
+>>> from run import db
+>>> db.create_all()
+>>> exit()
+
+then import data from the csv files into the tables
+
