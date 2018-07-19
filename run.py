@@ -176,36 +176,36 @@ def checkbuy(stockid,nos,investor,stock):
 @app.before_first_request
 def initialize():
     db.create_all()
-    with open('companies.csv', mode='r') as csv_file:
-    	csv_reader = csv.DictReader(csv_file)
-    	for row in csv_reader:
-    		company = Companies(id=row['id'],name=row['name'],current_price=row['current_price'],recent_trend=row['recent_trend'],shares_left=row['shares_left'])
-    		db.session.add(company)
-    with open('investors.csv', mode='r') as csv_file:
-    	csv_reader = csv.DictReader(csv_file)
-    	for row in csv_reader:
-    		investor = Investors()
-    		investor.id = row['id']
-    		investor.name = row['name']
-    		investor.password = row['password']
-    		investor.stocks1 = row['stocks1']
-    		investor.stocks2 = row['stocks2']
-    		investor.stocks3 = row['stocks3']
-    		investor.stocks4 = row['stocks4']
-    		investor.stocks5 = row['stocks5']
-    		investor.stocks6 = row['stocks6']
-    		investor.stocks7 = row['stocks7']
-    		investor.stocks8 = row['stocks8']
-    		investor.stocks9 = row['stocks9']
-    		investor.stocks10 = row['stocks10']
-    		investor.stocks11 = row['stocks11']
-    		investor.stocks12 = row['stocks12']
-    		investor.stocks13 = row['stocks13']
-    		investor.stocks14 = row['stocks14']
-    		investor.stocks1 = row['stocks15']
-    		investor.amount_left = row['amount_left']
-    		db.session.add(investor)
-    db.session.commit()		
+#     with open('companies.csv', mode='r') as csv_file:
+#     	csv_reader = csv.DictReader(csv_file)
+#     	for row in csv_reader:
+#     		company = Companies(id=row['id'],name=row['name'],current_price=row['current_price'],recent_trend=row['recent_trend'],shares_left=row['shares_left'])
+#     		db.session.add(company)
+#     with open('investors.csv', mode='r') as csv_file:
+#     	csv_reader = csv.DictReader(csv_file)
+#     	for row in csv_reader:
+#     		investor = Investors()
+#     		investor.id = row['id']
+#     		investor.name = row['name']
+#     		investor.password = row['password']
+#     		investor.stocks1 = row['stocks1']
+#     		investor.stocks2 = row['stocks2']
+#     		investor.stocks3 = row['stocks3']
+#     		investor.stocks4 = row['stocks4']
+#     		investor.stocks5 = row['stocks5']
+#     		investor.stocks6 = row['stocks6']
+#     		investor.stocks7 = row['stocks7']
+#     		investor.stocks8 = row['stocks8']
+#     		investor.stocks9 = row['stocks9']
+#     		investor.stocks10 = row['stocks10']
+#     		investor.stocks11 = row['stocks11']
+#     		investor.stocks12 = row['stocks12']
+#     		investor.stocks13 = row['stocks13']
+#     		investor.stocks14 = row['stocks14']
+#     		investor.stocks1 = row['stocks15']
+#     		investor.amount_left = row['amount_left']
+#     		db.session.add(investor)
+#     db.session.commit()		
 
 
 @app.route('/')
