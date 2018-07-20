@@ -91,6 +91,7 @@ class Companies(db.Model):
 ###
 ###
 def checksell(stockid,nos,investor):
+	stockid = int(stockid)
 	# investor = Investors.query.filter_by(name=session['name']).first()
 	if( stockid == 1 and investor.stocks1 > nos ):
 			return True
@@ -127,12 +128,13 @@ def checksell(stockid,nos,investor):
 def checkbuy(stockid,nos,investor,stock):
 	# investor = Investors.query.filter_by(name = session['name']).first()
 	# stock = Stock.query.filter_by(id = stockid).first()
-	print(nos)
+	print("nos="+nos)
 	nos=int(nos)
 
 	print(type(stock.current_price))
 	print(type(nos))
-	print(nos)
+	print(type(stockid))
+	stockid = int(stockid)
 
 	if investor.amount_left > stock.current_price * nos and stock.shares_left > nos :
 		if stockid == 1 :
