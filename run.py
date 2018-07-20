@@ -128,15 +128,18 @@ def checksell(stockid,nos,investor):
 def checkbuy(stockid,nos,investor,stock):
 	# investor = Investors.query.filter_by(name = session['name']).first()
 	# stock = Stock.query.filter_by(id = stockid).first()
-	print("nos="+nos)
+	print("nos=")
+	print(nos)
 	nos=int(nos)
 
-	print(type(stock.current_price))
-	print(type(nos))
-	print(type(stockid))
+	print(stock.current_price)
+	
 	stockid = int(stockid)
+	print(type(stockid))
+	print(stockid)
 
-	if investor.amount_left > stock.current_price * nos and stock.shares_left > nos :
+
+	if investor.amount_left >= stock.current_price * nos and stock.shares_left >= nos :
 		if stockid == 1 :
 			investor.stocks1 += nos
 		if stockid == 2 :
@@ -270,8 +273,8 @@ def sell():
 
 @app.route('/decrease',methods=['POST'])
 def decrease():
-	number_of_stocks = request.form['number']
-	stock_id = request.form['stock_id']
+	number_of_stocks = int(request.form['number'])
+	stock_id = int(request.form['stock_id'])
 	
 	investor = Investors.query.filter_by(name=session['name']).first()
 	stock = Companies.query.filter_by(id=stock_id).first()
@@ -279,7 +282,7 @@ def decrease():
 	if checksell(stock_id,number_of_stocks,investor):
 		investor.amount_left += stock.current_price * number_of_stocks
 		sale = Sales(sender_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
-		stock.amount_left += number_of_stocks
+		stock.shares_left += number_of_stocks
 		stock.current_price -= 1 
 		stock.recent_trend = 'down'	
 		db.session.add(sale)
@@ -297,8 +300,8 @@ def buy():
 
 @app.route('/increase',methods=['POST'])
 def increase():
-	number_of_stocks = request.form['number']
-	stock_id = request.form['stock_id']
+	number_of_stocks = int(request.form['number'])
+	stock_id = int(request.form['stock_id'])
 	
 	investor = Investors.query.filter_by(name=session['name']).first()
 	stock = Companies.query.filter_by(id=stock_id).first()
@@ -306,7 +309,7 @@ def increase():
 	if checkbuy(stock_id,number_of_stocks,investor,stock):
 		investor.amount_left -= stock.current_price * number_of_stocks
 		purchase = Purchases(recipient_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
-		stock.amount_left -= number_of_stocks
+		stock.shares_left -= number_of_stocks
 		stock.current_price += 2
 		stock.recent_trend = 'up'
 		db.session.add(purchase)
