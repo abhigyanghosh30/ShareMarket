@@ -11,6 +11,9 @@
 				<th scope="col">
 					Inc/Dec
 				</th>
+				<th scope="col">
+					Shares Left
+				</th>
 			</tr>
 		</thead>
 		<tbody>
@@ -24,6 +27,9 @@
 				</td>
 				<td>
 					<img src="{{ url_for('static',filename='up.png') }}" width="30px" id="image{{ stock.id }}">
+				</td>
+				<td>
+					{{ stock.shares_left }}
 				</td>
 			</tr>
 			{% endfor %}

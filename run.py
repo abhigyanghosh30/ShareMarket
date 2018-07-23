@@ -57,7 +57,7 @@ class Investors(db.Model):
 	stocks15 = db.Column(db.Integer, nullable=False, default=0)
 	sales = db.relationship('Sales',backref='investors', lazy='dynamic')
 	purchases = db.relationship('Purchases', primaryjoin="and_(Investors.id)==Purchases.recipient_id")
-	amount_left = db.Column(db.Integer, nullable=False, default=0)
+	amount_left = db.Column(db.Float, nullable=False, default=0)
 
 class Sales(db.Model):
 	__tablename__ = 'sales'
@@ -82,7 +82,7 @@ class Companies(db.Model):
 	
 	id = db.Column(db.Integer, primary_key=True, autoincrement=True)
 	name = db.Column(db.String(100), nullable=False)
-	current_price = db.Column(db.Integer, nullable=False, default=100)
+	current_price = db.Column(db.Float, nullable=False, default=100)
 	recent_trend = db.Column(db.String)
 	shares_left = db.Column(db.Integer, nullable=False, default=100)	
 
@@ -283,7 +283,7 @@ def decrease():
 		investor.amount_left += stock.current_price * number_of_stocks
 		sale = Sales(sender_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.shares_left += number_of_stocks
-		stock.current_price -= 1 
+		stock.current_price -= 0.1* number_of_stocks 
 		stock.recent_trend = 'down'	
 		db.session.add(sale)
 		db.session.commit()
@@ -310,7 +310,7 @@ def increase():
 		investor.amount_left -= stock.current_price * number_of_stocks
 		purchase = Purchases(recipient_id=investor.id,stock_id=stock_id,amount=stock.current_price,number_of_stocks=number_of_stocks)
 		stock.shares_left -= number_of_stocks
-		stock.current_price += 2
+		stock.current_price += 0.12 * number_of_stocks
 		stock.recent_trend = 'up'
 		db.session.add(purchase)
 		db.session.commit()
