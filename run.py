@@ -253,10 +253,7 @@ def price():
 
 @app.route('/home')
 def home():
-	try:
-		return render_template('alt_home.html', name=session['name'],stocks=Companies.query.all())
-	except:
-		return("Please Login First")
+	return render_template('alt_home.html', name=session['name'],stocks=Companies.query.all(),investor=Investors.query.filter_by(name=session['name']).first())
 
 
 @app.route('/admin_home')
