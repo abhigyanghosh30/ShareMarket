@@ -28,7 +28,7 @@
 				<td>
 					<img src="{{ url_for('static',filename='up.png') }}" width="30px" id="image{{ stock.id }}">
 				</td>
-				<td>
+				<td id="shares_left{{ stock.id }}">
 					{{ stock.shares_left }}
 				</td>
 			</tr>
