@@ -20,7 +20,10 @@ try:
 except:
 	unix_cmd = 'ifconfig'
 	process = subprocess.check_output(unix_cmd).decode()
-	index = process.index('192')
+	try:
+		index = process.index('192')
+	except:
+		index = process.index('10')
 	IP = ""
 	for i in range(15):
 		IP = IP+process[index+i]
@@ -238,23 +241,23 @@ def enter():
 	session.pop('name', None)
 	name = request.form['name']
 	password = request.form['password']
-	# try:
-	if name == 'admin':
-		if password == 'admin123' :
-			session['name'] = name
-			return redirect(url_for('admin_home'))
-		else:
-			return redirect('/')
+	try:
+		if name == 'admin':
+			if password == 'admin123' :
+				session['name'] = name
+				return redirect(url_for('admin_home'))
+			else:
+				return render_template('unauth.html')
 
-	investor = Investors.query.filter_by(name=name).first()
-	print(investor.password)
-	if(password == investor.password):
-		session['name'] = name
-		return redirect('/home')
-	session['name'] = name
-	return redirect('/home')
-	# except:
-	# 	return redirect('/')
+		investor = Investors.query.filter_by(name=name).first()
+		print(investor.password)
+		if(password == investor.password):
+			session['name'] = name
+			return redirect('/home')
+		else:
+			return render_template('unauth.html')
+	except:
+		return render_template('unauth.html')
 
 @app.route('/price', methods=['PUT'])
 def price():
