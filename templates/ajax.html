@@ -10,17 +10,19 @@
 					contentType: 'application/json'
 				});
 				request.done(function(data){
-					
+					var mqcp = document.getElementById("mqcp"+i.toString());
+					var mqrt = document.getElementById("mqrt"+i.toString());
 					var price = document.getElementById("stock"+i.toString());
 					var image = document.getElementById("image"+i.toString());
 					var sl = document.getElementById("shares_left"+i.toString());
 					var inprice = price.innerHTML;
 					if( data['trend'] == 'up' )
-						image.src="{{ url_for('static', filename='up.png') }}";
+						image.src=mqrt.src="{{ url_for('static', filename='up.png') }}";
 					else
-						image.src="{{ url_for('static', filename='down.png') }}";
+						image.src=mqrt.src="{{ url_for('static', filename='down.png') }}";
 					price.innerHTML = (data['price']);
 					sl.innerHTML = (data['shares']);
+					mqcp.innerHTML = (data['price']);
 				});
 		}
 	}

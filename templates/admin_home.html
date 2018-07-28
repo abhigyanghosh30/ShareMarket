@@ -2,6 +2,22 @@
 	{% block title %}ADMIN{% endblock %}
 	{% block body %}
 	{% include 'admin_nav.html' %}
+	<marquee class="text-white bg-danger" scrollamount="10" behaviour="loop">
+		<ul class="list-inline">
+			{% for stock in stocks %}
+			<li class="list-inline-item">{{ stock.name }} </li>
+			<li class="list-inline-item" id="mqcp{{ stock.id }}">{{ stock.current_price }}</li>
+			<li class="list-inline-item">
+			{% if stock.recent_trend == "up" %}
+				<img src="{{ url_for('static',filename="up.png") }}" id="mqrt{{ stock.id }}" width="15px">
+			{% else %}
+				<img src="{{ url_for('static',filename="down.png") }}" id="mqrt{{ stock.id }}" width="15px">
+			{% endif %}
+			</li>
+			<li class="list-inline-item">|</li>
+			{% endfor %}
+		</ul>
+	</marquee>
 	{% include 'footer.html' %}	
 	{% endblock %}
 	{% block script %}
