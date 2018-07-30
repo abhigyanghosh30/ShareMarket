@@ -38,6 +38,8 @@
 	var txt5 = "Click to submit >"
 	var speed=50;
 	$(document).ready(function(){
+		document.body.style.background = "url('{{url_for('static',filename='Suit.jpg')}}')";
+		document.body.style.backgroundSize = "cover";
 		typeWriter(txt,"type");
 
 	});
