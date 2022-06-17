@@ -23,7 +23,7 @@ Magic-file-extensions==0.2
 MarkupSafe==1.0
 matplotlib==1.5.1
 netifaces==0.10.4
-numpy==1.11.0
+numpy==1.21.0
 onboard==1.2.0
 passlib==1.7.1
 pexpect==4.0.1
